@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
@@ -30,15 +29,41 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     Image image;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pic Zoom In Out Demo'),
-      ),
-      body: PhotoView(
-          backgroundDecoration: const BoxDecoration(
-            color: Colors.transparent,
+        appBar: AppBar(
+          title: const Text('Pic Zoom In Out Demo'),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(25.0),
+          child: Column(
+            children: [
+              Expanded(
+                flex: 3,
+                child: PhotoView(
+                    backgroundDecoration: const BoxDecoration(
+                      color: Colors.transparent,
+                    ),
+                    imageProvider: NetworkImage(
+                        'https://i.insider.com/5c1c90f8e04d6243c7019cf6?width=2000&format=jpeg&auto=webp')),
+              ),
+              Expanded(
+                flex: 1,
+                child: ListView.builder(
+                  itemCount: 5,
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Image.network(
+                      'https://picsum.photos/200',
+                      fit: BoxFit.fill,
+                    ),
+                  );
+                }),
+              )
+            ],
           ),
-          imageProvider: NetworkImage(
-              'https://i.insider.com/5c1c90f8e04d6243c7019cf6?width=2000&format=jpeg&auto=webp')),
+        )
     );
   }
 }
