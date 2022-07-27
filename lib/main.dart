@@ -5,9 +5,14 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -22,12 +27,33 @@ class MyApp extends StatelessWidget {
 }
 
 /// PhotoView
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key}) : super(key: key);
 
+  int mIndex = 0;
+  String selectedIndexUrl = 'https://picsum.photos/200/300?random=70';
+  List<Model> imageList = [
+    Model(
+        imageUrl:
+            'https://picsum.photos/200/300?random=110'),
+    Model(
+        imageUrl:
+        'https://picsum.photos/200/300?random=120'),
+    Model(
+        imageUrl:
+            'https://picsum.photos/200/300?random=140'),
+    Model(
+        imageUrl:
+        'https://picsum.photos/200/300?random=101'),
+  ];
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    Image image;
     return Scaffold(
         appBar: AppBar(
           title: const Text('Pic Zoom In Out Demo'),
@@ -42,30 +68,46 @@ class MyHomePage extends StatelessWidget {
                     backgroundDecoration: const BoxDecoration(
                       color: Colors.transparent,
                     ),
-                    imageProvider: NetworkImage(
-                        'https://i.insider.com/5c1c90f8e04d6243c7019cf6?width=2000&format=jpeg&auto=webp')),
+                    imageProvider: NetworkImage(widget.selectedIndexUrl)),
               ),
               Expanded(
                 flex: 1,
                 child: ListView.builder(
-                  itemCount: 5,
+                    itemCount: widget.imageList.length,
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Image.network(
-                      'https://picsum.photos/200',
-                      fit: BoxFit.fill,
-                    ),
-                  );
-                }),
+                      widget.mIndex = index;
+                      return GestureDetector(
+                        onTap: () {
+                          debugPrint(index.toString());
+                          widget.selectedIndexUrl =
+                              widget.imageList[index].imageUrl;
+                          debugPrint(widget.imageList[index].imageUrl);
+                          debugPrint(widget.selectedIndexUrl);
+                          setState((){});
+
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Image.network(
+                            widget.imageList[index].imageUrl,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      );
+                    }),
               )
             ],
           ),
-        )
-    );
+        ));
   }
+}
+
+class Model {
+  final String imageUrl;
+
+  Model({required this.imageUrl});
 }
 
 /// PinchZoomImage
