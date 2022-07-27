@@ -29,22 +29,14 @@ class _MyAppState extends State<MyApp> {
 /// PhotoView
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key}) : super(key: key);
-
+  bool isZoom = true;
   int mIndex = 0;
   String selectedIndexUrl = 'https://picsum.photos/200/300?random=70';
   List<Model> imageList = [
-    Model(
-        imageUrl:
-            'https://picsum.photos/200/300?random=110'),
-    Model(
-        imageUrl:
-        'https://picsum.photos/200/300?random=120'),
-    Model(
-        imageUrl:
-            'https://picsum.photos/200/300?random=140'),
-    Model(
-        imageUrl:
-        'https://picsum.photos/200/300?random=101'),
+    Model(imageUrl: 'https://picsum.photos/200/300?random=110'),
+    Model(imageUrl: 'https://picsum.photos/200/300?random=120'),
+    Model(imageUrl: 'https://picsum.photos/200/300?random=140'),
+    Model(imageUrl: 'https://picsum.photos/200/300?random=101'),
   ];
 
   @override
@@ -63,8 +55,12 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: [
               Expanded(
-                flex: 3,
+                flex: 5,
                 child: PhotoView(
+                    scaleStateChangedCallback: (value) {
+                      widget.isZoom = value.name == 'zoomedOut' ? true : false;
+                      setState(() {});
+                    },
                     minScale: PhotoViewComputedScale.contained * 0.8,
                     maxScale: PhotoViewComputedScale.covered * 1.8,
                     initialScale: PhotoViewComputedScale.contained,
@@ -73,34 +69,34 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     imageProvider: NetworkImage(widget.selectedIndexUrl)),
               ),
-              Expanded(
-                flex: 1,
-                child: ListView.builder(
-                    itemCount: widget.imageList.length,
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      widget.mIndex = index;
-                      return GestureDetector(
-                        onTap: () {
-                          debugPrint(index.toString());
-                          widget.selectedIndexUrl =
-                              widget.imageList[index].imageUrl;
-                          debugPrint(widget.imageList[index].imageUrl);
-                          debugPrint(widget.selectedIndexUrl);
-                          setState((){});
-
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Image.network(
-                            widget.imageList[index].imageUrl,
-                            fit: BoxFit.fill,
+              if (widget.isZoom)
+                Expanded(
+                  child: ListView.builder(
+                      itemCount: widget.imageList.length,
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        widget.mIndex = index;
+                        return GestureDetector(
+                          onTap: () {
+                            debugPrint(index.toString());
+                            widget.selectedIndexUrl =
+                                widget.imageList[index].imageUrl;
+                            debugPrint(widget.imageList[index].imageUrl);
+                            debugPrint(widget.selectedIndexUrl);
+                            setState(() {});
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Image.network(
+                              widget.imageList[index].imageUrl,
+                              fit: BoxFit.fill,
+                            ),
                           ),
-                        ),
-                      );
-                    }),
-              )
+                        );
+                      }),
+                )
             ],
           ),
         ));
