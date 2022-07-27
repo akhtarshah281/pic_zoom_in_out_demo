@@ -65,6 +65,9 @@ class _MyHomePageState extends State<MyHomePage> {
               Expanded(
                 flex: 3,
                 child: PhotoView(
+                    minScale: PhotoViewComputedScale.contained * 0.8,
+                    maxScale: PhotoViewComputedScale.covered * 1.8,
+                    initialScale: PhotoViewComputedScale.contained,
                     backgroundDecoration: const BoxDecoration(
                       color: Colors.transparent,
                     ),
